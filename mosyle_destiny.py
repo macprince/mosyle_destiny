@@ -13,6 +13,7 @@ import re
 # Custom Imports
 import pytds
 import csv
+import xlsxwriter
 
 # Set up argparse
 parser = argparse.ArgumentParser()
@@ -86,8 +87,24 @@ def get_device_data(serials, host, user, password, db):
 
     return devicedata
 
+def write_mosyle_xlsx(devicedata):
+    xlsx_file = os.path.join(os.path.dirname(os.path.abspath(args.csv)),'MosyleImport.xlsx')
+    workbook = xlsxwriter.Workbook(xlsx_file)
+    worksheet = workbook.add_worksheet('Devices')
+    row = 0
+    col = 0
 
+    headers=["Serial Number","Device Name","Lock Message","Asset Tag","Tags"]
+    for header in headers:
+        worksheet.write(0,col,header)
+        col += 1
+    row += 1
+    for device in devicedata:
+        worksheet.write(row,0,device['SerialNumber'])
+        worksheet.write(row,3,device['CopyBarcode'])
+        row += 1
 
+    workbook.close()
 
 def main():
     if args.csv:
@@ -104,6 +121,8 @@ def main():
             logging.debug("Got device data from server!\n%s", data)
             if data is None:
                 logging.error("No data")
+            else:
+                write_mosyle_xlsx(data)
     sys.exit(0)
 
 if __name__ == '__main__':

@@ -1,4 +1,6 @@
 
 *.csv
+*.xlsx
 config.json
 *.log
+.DS_Store
