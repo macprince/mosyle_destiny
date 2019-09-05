@@ -3,10 +3,20 @@ import csv
 import os
 import sys
 
-serials = []
+def read_serials_from_csv(csv_file):
+    serials = []
+    with open(csv_file, mode='r') as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        for row in csv_reader:
+            if row['Asset Tag'] == "":
+                serials.append(row['Serial Number'])
+    return serials
 
-with open(os.path.join(sys.path[0], 'devices_info_5d704946e0f45.csv'), mode='r') as csv_file:
-    csv_reader = csv.DictReader(csv_file)
-    for row in csv_reader:
-        if row['Asset Tag'] == "":
-            serials.append(row['Serial Number'])
+
+def main():
+
+
+    sys.exit(0)
+
+if __name__ == '__main__':
+    main()
