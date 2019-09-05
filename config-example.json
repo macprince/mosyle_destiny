@@ -1,0 +1,8 @@
+{
+	"server_info": {
+		"server": "DESTINYSQLSERVER.DOMAIN.TLD",
+		"user": "READONLYUSER",
+		"password": "READONLYPASSWORD",
+		"database": "destiny"
+	}
+}
