@@ -1,2 +1,4 @@
 
 *.csv
+config.json
+*.log
