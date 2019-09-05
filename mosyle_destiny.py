@@ -14,6 +14,29 @@ import re
 import pytds
 import csv
 
+# Set up argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("--debug",
+                    help="Turns Debug Logging On.",
+                    action="store_true")
+# parser.add_argument("--config",
+#                     help="Specify path to config.json",
+#                     default=os.path.join(sys.path[0],"config.json"))
+
+args = parser.parse_args()
+
+# Set up logging
+level = logging.INFO
+if args.debug:
+    level = logging.DEBUG
+logging.basicConfig(format='%(asctime)s - %(levelname)s: %(message)s',
+                    datefmt='%Y-%m-%d %I:%M:%S %p',
+                    level=level,
+                    filename=os.path.join(sys.path[0],'mosyle_destiny.log'))
+stdout_logging = logging.StreamHandler()
+stdout_logging.setFormatter(logging.Formatter())
+logging.getLogger().addHandler(stdout_logging)
+
 def read_serials_from_csv(csv_file):
     serials = []
     with open(csv_file, mode='r') as csv_file:
@@ -22,6 +45,7 @@ def read_serials_from_csv(csv_file):
             if row['Asset Tag'] == "":
                 serials.append(row['Serial Number'])
     return serials
+
 
 
 
