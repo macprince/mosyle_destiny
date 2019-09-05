@@ -59,7 +59,32 @@ def read_serials_from_csv(csv_file):
                 serials.append(row['Serial Number'])
     return serials
 
+def get_device_data(serials, host, user, password, db):
+    if len(serials) == 1:
+        barcode_cmd = "SELECT SerialNumber, CopyBarcode FROM CircCatAdmin.CopyAssetView WHERE SerialNumber = '{0}'".format(serials[0])
+    else:
+        barcode_cmd = "SELECT SerialNumber, CopyBarcode FROM CircCatAdmin.CopyAssetView WHERE SerialNumber IN {}".format(tuple(serials))
+    db_host = host
+    db_user = user
+    db_password = password
+    db_name = db
+    try:
+        with pytds.connect(db_host, database=db_name, user=db_user,
+                           password=db_password, as_dict=True) as conn:
+            logging.debug("Server Connection Success")
+            with conn.cursor() as cur:
+                cur.execute(barcode_cmd)
+                logging.debug("Lookup Command Executed")
+                devicedata = (cur.fetchall())
+                logging.debug("Date retrieved, closing connection")
 
+    except pytds.tds.LoginError:
+        logging.error("Unable to connect to server! Connection may have timed out!")
+        sys.exit(2)
+    cur.close()
+    conn.close()
+
+    return devicedata
 
 
 
@@ -69,6 +94,16 @@ def main():
         csv_file = os.path.abspath(args.csv)
         serials = read_serials_from_csv(csv_file)
 
+        if serials != []:
+            data = get_device_data(serials,
+                                   destiny_config["server"],
+                                   destiny_config["user"],
+                                   destiny_config["password"],
+                                   destiny_config["database"])
+
+            logging.debug("Got device data from server!\n%s", data)
+            if data is None:
+                logging.error("No data")
     sys.exit(0)
 
 if __name__ == '__main__':
