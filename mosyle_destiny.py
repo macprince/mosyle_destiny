@@ -13,8 +13,11 @@ def read_serials_from_csv(csv_file):
     return serials
 
 
-def main():
 
+
+def main():
+    if len(sys.argv) == 2:
+        csv_path = os.path.abspath(sys.argv[1])
 
     sys.exit(0)
 
