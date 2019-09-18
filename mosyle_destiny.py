@@ -119,7 +119,7 @@ def main():
                                    destiny_config["database"])
 
             logging.debug("Got device data from server!\n%s", data)
-            if data is None:
+            if not data:
                 logging.error("No data")
             else:
                 write_mosyle_xlsx(data)
